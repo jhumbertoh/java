@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context" xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <import resource="classpath:applicationContext-logica.xml" />
+
+    <!-- Parametros de configuracion de la aplicacion -->
+    <context:property-placeholder location="classpath:config.properties" order="1" ignore-unresolvable="true" />
+
+    <!-- Fuente de datos -->
+    <jee:jndi-lookup id="dataSource" jndi-name="jdbc/dsSPRWeb" expected-type="javax.sql.DataSource" resource-ref="true" />
+
+    <!-- Configuración para las transacciones -->
+    <tx:jta-transaction-manager />
+
+    <!-- Mapas distribuidos para los caches de objectos -->
+    <jee:jndi-lookup id="parametroCache" jndi-name="services/cache/dmParametros" expected-type="com.ibm.websphere.cache.DistributedMap" resource-ref="true" />
+
+    <!-- Fabrica de conexiones JMS -->
+    <jee:jndi-lookup id="connectionFactory" jndi-name="jms/cfESB" expected-type="javax.jms.ConnectionFactory" resource-ref="true" />
+
+    <!-- Destino de envio de mensajes JMS -->
+    <jee:jndi-lookup id="correoRequestDestination" jndi-name="jms/qCorreoReq" expected-type="javax.jms.Destination" resource-ref="true" />
+    <jee:jndi-lookup id="encriptacionRequestDestination" jndi-name="jms/qEncriptacionReq" expected-type="javax.jms.Destination" resource-ref="true" />
+    <jee:jndi-lookup id="encriptacionResponseDestination" jndi-name="jms/qEncriptacionRes" expected-type="javax.jms.Destination" resource-ref="true" />
+    <jee:jndi-lookup id="desencriptacionRequestDestination" jndi-name="jms/qDesencriptacionReq" expected-type="javax.jms.Destination" resource-ref="true" />
+    <jee:jndi-lookup id="desencriptacionResponseDestination" jndi-name="jms/qDesencriptacionRes" expected-type="javax.jms.Destination" resource-ref="true" />
+    <jee:jndi-lookup id="validacionFirmaRequestDestination" jndi-name="jms/qValidacionFirmaReq" expected-type="javax.jms.Destination" resource-ref="true" />
+    <jee:jndi-lookup id="validacionFirmaResponseDestination" jndi-name="jms/qValidacionFirmaRes" expected-type="javax.jms.Destination" resource-ref="true" />
+
+</beans>
