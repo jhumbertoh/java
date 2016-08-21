@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+    layout:decorator="plantilla/default" th:with="indiceMenu='#liAfiliacion'">
+<head>
+<script type="text/javascript" th:inline="javascript" th:if="${mostrarMensaje != null}">
+//<![CDATA[
+    $(function() {
+        $("#dialog-confirm" ).dialog({
+          resizable: false,
+          height:170,
+          width:380,
+          modal: true,
+          title: 'Mensaje' ,
+          buttons: {
+            "Aceptar": function() {
+              $( this ).dialog( "close" );
+            }
+          }
+        });
+      });
+//]]>   
+</script>
+<script type="text/javascript" th:inline="javascript">
+//<![CDATA[
+        jQuery(document).ready(function(){
+            // binds form submission and fields to the validation engine
+            jQuery("#frmSolicitudAfiliacion").validationEngine('attach', {binded: false});
+            
+        });
+   //]]>
+</script>
+<title th:text="#{afiliacion.titulo.principal.formulario}">Titulo</title>
+</head>
+<body>
+    <div layout:fragment="contenido">
+        <div id="panelDerecho">
+            <div id="dialog-confirm" th:if="${mostrarMensaje != null}">
+                <table style="border-style: none;">
+                    <tr>
+                        <td><span class="ui-icon ui-icon-info" style="float: left; margin: 0 7px 20px 0;"></span></td>
+                        <td><p th:text="#{solicitudAfiliacion.registro.exitoso}" style="float: left; margin: 0 7px 20px 0;"></p></td>
+                    </tr>
+                </table>
+            </div>
+            <table style="width: 100%; border-style: none;">
+                <tr valign="top">
+                    <td th:text="#{afiliacion.titulo.principal.formulario}" class="titulo_principal"><label
+                        th:text="#{afiliacion.titulo.principal.formulario}"></label></td>
+                </tr>
+                <tr>
+                    <td>
+                        <form th:action="@{/afiliaciones/registro-solicitud-afiliacion/crear}" th:attr="id=frmSolicitudAfiliacion,method=post"
+                            th:object="${solicitudAfiliacionCmd}">
+                            <div th:if="${#fields.hasAnyErrors()}">
+                                <p style="color: red;" th:each="err,iterStat  : ${#fields.errors('*')}" th:if="${iterStat.index == 0}" th:text="${err}"></p>
+                            </div>
+                            <table style="width: 100%; border-style: none;">
+                                <tr class="Bcp_FilaImpar">
+                                    <td ><label th:text="#{formularioAfiliacion.nombreComercio}"></label></td>
+                                    <td><input id="txtNombreComercio" th:value="${comercio.nombreComercial}" name="txtNombreComercio" class="input_visanent_size" type="text"  th:disabled="${true}"></input> </td>                              
+                                </tr>
+                                
+                                <tr class="Bcp_FilaImpar">
+                                    <td class="Texto" th:text="#{formularioAfiliacion.producto}"><label th:text="#{afiliacion.field.formProducto}"></label>Producto:</td>
+                                    <td>
+                                        <div id="divComboProductos">
+                                            <select th:id="ddlProducto" th:name="ddlProducto" onchange="setearProducto(this);" class="validate[required] input_visanent_size">
+			                                     <option value="" selected="selected" th:text="#{combo.seleccione}">Seleccione</option>
+			                                     <option th:each="producto, productoStat: ${listaProductos}" th:value="${producto.id}" th:text="${producto.nombre}" >Banca</option>								
+	                                        </select>
+                                        </div> <input type="hidden" th:field="*{detalleAfiliacion.producto.id}" id="hdIdProducto"></input>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td th:text="#{formularioAfiliacion.datosTarjeta}" colspan="5" class="Bcp_CabeceraTablaIzq" width="100%"><label
+                                        th:text="#{afiliacion.titulo.agrupador.formularioDatos}"></label></td>
+                                </tr>
+                                <tr class="Bcp_FilaImpar">
+                                    <td th:text="#{formularioAfiliacion.numeroTarjeta}"><label th:text="#{afiliacion.field.formNumTarjeta}"></label></td>
+                                    <td>
+                                        <input type="text" th:field="*{detalleAfiliacion.tarjeta.numero}"  name="txtNroTarjeta" id="txtNroTarjeta" maxlength="20" onchange="limpiarBin();"                                        class="validate[required,custom[integer],minSize[12]] text-input input_visanent_size"></input></td>
+                                    <td th:text="#{formularioAfiliacion.fechaExpiracionTarjeta}"><label th:text="#{afiliacion.field.formfechExpTarjeta}"></label></td>
+                                    <td><select id="ddlMesExpiracion" style="width: 60px"  class="validate[required]"
+                                        th:field="*{detalleAfiliacion.tarjeta.mesExpiracion}">
+                                            <option value="" selected="selected" th:text="#{combo.mes}">Mes</option>
+                                            <option th:each="mes, mesStat: ${listaMeses}" th:value="${mes}" th:text="${mes}">DNI</option>
+                                    </select> - <select id="ddlAnhoExpiracion" style="width: 60px"  class="validate[required]"
+                                        th:field="*{detalleAfiliacion.tarjeta.anhoExpiracion}" data-prompt-position="bottomRight:0">
+                                            <option value="" selected="selected" th:text="#{combo.anho}">Año</option>
+                                            <option th:each="anho, anhoStat: ${listaAnhos}" th:value="${anho}" th:text="${anho}">DNI</option>
+                                    </select></td>
+                                </tr>
+                                <tr class="Bcp_FilaImpar">
+                                    <td th:text="#{formularioAfiliacion.emisor}"></td>
+                                    <td><input class="input_visanent_size" id="txtEmisor" th:field="*{detalleAfiliacion.tarjeta.bin.emisor.nombre}"
+                                        type="text" readonly="readonly"></input></td>
+                                    <td th:text="#{formularioAfiliacion.tipoTarjeta}">Tipo Tarjeta:</td>
+                                    <td><input class="input_visanent_size" type="text" id="txtTipoTarjeta" readonly="readonly"
+                                        th:field="*{detalleAfiliacion.tarjeta.bin.tipoTarjeta}"></input></td>
+                                </tr>
+                                <tr class="Bcp_FilaImpar">
+                                    <td th:text="#{formularioAfiliacion.nombreTarjeta}">Nombre Tarjeta:</td>
+                                    <td><input class="input_visanent_size" type="text" name="matricula" id="txtNombreTarjeta" value="" readonly="readonly"
+                                        th:field="*{detalleAfiliacion.tarjeta.bin.nombreTarjeta}"></input></td>
+                                    <td colspan="2" align="right">
+                                    <input type="hidden" id="hdIdBin" th:field="*{detalleAfiliacion.tarjeta.bin.id}"></input>
+                                    <input name="input" id="btnVerificar" th:value="#{formularioAfiliacion.verificar}" type="button" value="Verificar" class="Bcp_Boton" 
+                                    onClick="verificar();"></input>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td th:text="#{formularioAfiliacion.datosTarjetahabiente}" colspan="5" class="Bcp_CabeceraTablaIzq" width="100%"></td>
+                                </tr>
+                                <tr class="Bcp_FilaImpar">
+                                    <td th:text="#{formularioAfiliacion.nombres}">Nombres</td>
+                                    <td><input type="text" th:field="*{detalleAfiliacion.tarjetahabiente.nombres}" 
+                                        name="txtNombreTarjetaHabiente" id="txtNombreTarjetaHabiente" maxlength="50"
+                                        class="validate[required,] text-input input_visanent_size"></input></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="Bcp_FilaImpar">
+                                    <td th:text="#{formularioAfiliacion.apellidoPaterno}">Apellido Paterno</td>
+                                    <td><input type="text" th:field="*{detalleAfiliacion.tarjetahabiente.apellidoPaterno}" 
+                                        name="txtApellidoPaternoTarjeta" id="txtApellidoPaternoTarjeta" maxlength="50"
+                                        class="validate[required,] text-input input_visanent_size"></input></td>
+                                    <td th:text="#{formularioAfiliacion.apellidoMaterno}">Apellido Materno</td>
+                                    <td><input type="text" th:field="*{detalleAfiliacion.tarjetahabiente.apellidoMaterno}" 
+                                        name="txtApellidoMaternoTarjeta" id="txtApellidoMaternoTarjeta" maxlength="50" class="text-input input_visanent_size"></input></td>
+                                </tr>
+                                <tr class="Bcp_FilaImpar">
+                                    <td th:text="#{formularioAfiliacion.tipoDocumentoIdentidad}">Tipo de Doc. Identidad del TH:</td>
+                                    <td><select id="ddlTipoDocAfiliacionTarjeta" name="select"
+                                        th:field="*{detalleAfiliacion.tarjetahabiente.tipoDocumentoIdentidad}" class="validate[required] input_visanent_size">
+                                            <option value="" selected="selected" th:text="#{combo.seleccione}">Seleccione</option>
+                                            <option th:each="tipoDocumento, tipoDocumentoStat: ${listaTipoDocumentoIdentidad}" th:value="${tipoDocumento}"
+                                                th:text="#{'tipoDocumento.'+${tipoDocumento}}">DNI</option>
+                                    </select></td>
+                                    <td class="Texto" th:text="#{formularioAfiliacion.numeroDocumentoIdentidad}">Número Doc. Identidad del TH:</td>
+                                    <td><input type="text" name="NroTarjerta" id="txtNroDocumentoIdentidad"
+                                        th:field="*{detalleAfiliacion.tarjetahabiente.numeroDocumentoIdentidad}" maxlength="24"
+                                        class="validate[required,custom[integer]] text-input input_visanent_size" data-prompt-position="topLeft:0"></input></td>
+                                </tr>
+                                <tr class="Bcp_FilaImpar">
+                                    <td th:text="#{formularioAfiliacion.telefono}">Teléfono:</td>
+                                    <td><input type="text" th:field="*{detalleAfiliacion.tarjetahabiente.telefono}"
+                                        class="validate[required,custom[phone]] text-input input_visanent_size" name="matricula" maxlength="15" id="txtTelefono"></input></td>
+                                    <td th:text="#{formularioAfiliacion.email}">E-mail:</td>
+                                    <td><input type="text" th:field="*{detalleAfiliacion.tarjetahabiente.email}"
+                                        class="validate[required,custom[email]] text-input input_visanent_size" name="matricula" id="txtEmail" maxlength="75"
+                                        data-prompt-position="bottomRight:0"></input></td>
+                                </tr>
+                                <tr>
+                                    <td th:text="#{formularioAfiliacion.datosBeneficiario}" colspan="5" class="Bcp_CabeceraTablaIzq" width="100%">DATOS DEL
+                                        BENEFICIARIO</td>
+                                </tr>
+                                <tr class="Bcp_FilaImpar">
+                                    <td th:text="#{formularioAfiliacion.numeroIdentificacion}">Nro. de Identificación (Número de Poliza del Seguro):</td>
+                                    <td><input type="text" class="validate[required,custom[onlyLetterNumber]] text-input input_visanent_size"
+                                        name="matricula" id="txtNroIdentificacion" th:field="*{detalleAfiliacion.beneficiario.numeroIdentificacion}"
+                                        maxlength="24"></input></td>
+                                    <td th:text="#{formularioAfiliacion.nombres}">Nombres:</td>
+                                    <td><input type="text" th:field="*{detalleAfiliacion.beneficiario.nombres}" data-prompt-position="bottomRight:0"
+                                        class="validate[required,] text-input input_visanent_size" name="matricula" id="txtNombreBeneficiario" maxlength="50"></input></td>
+                                </tr>
+                                <tr class="Bcp_FilaImpar">
+                                    <td th:text="#{formularioAfiliacion.apellidoPaterno}">Apellido Paterno:</td>
+                                    <td><input type="text" th:field="*{detalleAfiliacion.beneficiario.apellidoPaterno}"
+                                        class="validate[required,] text-input input_visanent_size" name="matricula" id="txtApellidoPaternoBeneficiario"
+                                        maxlength="50"></input></td>
+                                    <td th:text="#{formularioAfiliacion.apellidoMaterno}">Apellido Materno:</td>
+                                    <td><input type="text" th:field="*{detalleAfiliacion.beneficiario.apellidoMaterno}"
+                                        class="text-input input_visanent_size" name="matricula" id="txtApellidoMaternoBeneficiario" maxlength="50"></input></td>
+                                </tr>
+                                <tr>
+                                    <td th:text="#{formularioAfiliacion.datosCargo}" colspan="5" class="Bcp_CabeceraTablaIzq" width="100%">DATOS DEL CARGO</td>
+                                </tr>
+                                <tr class="Bcp_FilaImpar">
+                                    <td th:text="#{formularioAfiliacion.montoMaximo}">Monto Máximo:</td>
+                                    <td><input type="text" name="matricula" id="matricula" th:field="*{detalleAfiliacion.montoMaximo}"
+                                        class="validate[required,custom[number],funcCall[validarMayorA[0]]] text-input input_visanent_size" maxlength="12"></input></td>
+                                    <td th:text="#{formularioAfiliacion.tipoMoneda}">Tipo de Moneda:</td>
+                                    <td>
+                                        <input type="text" th:value="#{'moneda.'+${comercio.moneda}}" class="validate[required,] text-input input_visanent_size" name="moneda" id="txtMoneda" maxlength="50" th:disabled="${true}"></input>
+                                        <input type="hidden" id="hdIdMoneda" th:field="*{detalleAfiliacion.moneda}"/>
+                                        <input type="hidden" id="hdNumeroEnmascarado" th:field="*{detalleAfiliacion.tarjeta.numeroEnmascarado}"/> 
+                                     </td>
+                                     
+                                </tr>
+                                <tr>
+                                    <td colspan="4"></td>
+                                </tr>
+                                <tr class="Bcp_FilaImpar">
+                                    <td colspan="4"><input type="checkbox" id="chkTerminosCondiciones" onclick="ocultarMensajeValidacion();"
+                                        name="chkTerminosCondiciones" />Acepto los <b><a th:href="@{#{url.terminos.condiciones}}" target="_blank">Términos
+                                                y Condiciones</a></b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"></td>
+                                </tr>
+                                <tr class="Bcp_FilaImpar">
+                                  <td><img th:src="@{/afiliaciones/registro-solicitud-afiliacion/captcha}" title="captchaTitle" alt="captchaTitle"/></td>
+                                  <td valign="top">
+                                        <input type="text" name="kaptchafield"/>
+                                   </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" align="right"><input name="input" type="submit" class="Bcp_Boton"
+                                        th:value="#{formularioAfiliacion.registrar}" value="Registrar" onclick="return validarFormulario();"></input> <input
+                                        name="input" type="button" class="Bcp_Boton" th:value="#{formularioAfiliacion.cancelar}" value="Cancelar"
+                                        onClick="cancelar();"></input></td>
+                                </tr>
+                            </table>
+                        </form>
+                    </td>
+                </tr>
+              </table>
+        </div>
+        <script type="text/javascript" th:inline="javascript" th:replace="/plantilla/fragmentoValidacionesAfiliacion :: validaciones">
+</script>
+    <script type="text/javascript" th:inline="javascript">
+    //<![CDATA[
+        
+        function setearProducto(comboProducto)
+        {           
+            document.getElementById('hdIdProducto').value = comboProducto.value; 
+        }
+        
+        function validarFormulario()
+        {
+        	if(jQuery("#frmSolicitudAfiliacion").validationEngine('validate')){
+               
+                var marcado = $("#chkTerminosCondiciones").is(':checked');
+                if(!marcado)
+                {
+                	$('#chkTerminosCondiciones').validationEngine('showPrompt', [[#{terminos.condiciones.aceptar}]], 'rojo','bottomLeft', true);
+                	return false;
+                }	
+                $("#ddlMesExpiracion").removeAttr("disabled");
+                $("#ddlAnhoExpiracion").removeAttr("disabled");
+                return true;
+        	}
+        	else
+        	{
+        		return false;
+        	}	
+        }
+
+        function limpiarBin()
+        {
+        	document.getElementById('hdIdBin').value = "";
+        }
+        
+        function cancelar()
+        {
+        	window.location.href=[[@{'/inicio'}]];
+        }
+        
+        function ocultarMensajeValidacion()
+        {
+        	$('#chkTerminosCondiciones').validationEngine('hide');
+        }
+        
+        function verificar(){
+            
+            if( $("#txtNroTarjeta").validationEngine('validate') ||
+                $("#ddlMesExpiracion").validationEngine('validate') ||
+                $("#ddlAnhoExpiracion").validationEngine('validate'))
+            {
+                return;
+            }
+       
+            var numeroTarjeta = $("#txtNroTarjeta").val();
+                        
+            $.ajax({
+                url:[[@{'/afiliaciones/registro-solicitud-afiliacion/verificarbin'}]]+'/'+ numeroTarjeta,
+                data: '',
+                dataType:'text',
+                cache:false,
+                type:'GET',
+                success:function(response){
+                    //alert('Resp: '+response);
+                    var jsonp = response;
+                    var lang = '';
+                    var obj = $.parseJSON(jsonp);
+                    
+                    document.getElementById('txtNombreTarjeta').value = obj.nombreTarjeta;              
+                    document.getElementById('txtEmisor').value = obj.nombreEmisor;
+                    document.getElementById('txtTipoTarjeta').value = obj.tipoTarjeta;
+                    document.getElementById('hdIdBin').value = obj.idBin;
+                    
+                    document.getElementById('txtNombreTarjetaHabiente').value = obj.nombres;
+                    document.getElementById('txtApellidoPaternoTarjeta').value = obj.apellidoPaterno;
+                    document.getElementById('txtApellidoMaternoTarjeta').value = obj.apellidoMaterno;
+                    document.getElementById('txtNroDocumentoIdentidad').value = obj.numeroDocumentoIdentidad;
+                    document.getElementById('ddlTipoDocAfiliacionTarjeta').value = obj.tipoDocumentoIdentidad;
+                    document.getElementById('txtEmail').value = obj.email;
+                    document.getElementById('txtTelefono').value = obj.telefono;    
+                    document.getElementById('hdNumeroEnmascarado').value = $("#txtNroTarjeta").val();
+                    
+                    var errorBinNoEncontrado = [[#{bin.noEncontrado}]];
+                    
+                    if(obj.codigoError != null && obj.codigoError != "")
+                    {
+                    	var mensaje = "";
+                    	if(obj.codigoError == 'BIN_NO_ENCONTRADO')
+                    	{
+                    		mensaje = errorBinNoEncontrado;
+                    	}
+                    	
+                    	$('#txtNroTarjeta').validationEngine('showPrompt', mensaje, 'rojo','bottomLeft', true);
+                    }
+                    
+                    $('#btnVerificar').validationEngine('hide');                                
+                }                           
+            });
+         }   
+        
+        setReadOnly("txtEmisor");
+        setReadOnly("txtNombreTarjeta");
+        setReadOnly("txtTipoTarjeta");
+        
+        //]]>
+    </script>
+    </div>
+</body>
+</html>

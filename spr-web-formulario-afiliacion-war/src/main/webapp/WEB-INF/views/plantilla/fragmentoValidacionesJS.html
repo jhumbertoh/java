@@ -1,0 +1,268 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <body>
+  <div>
+
+     <script type="text/javascript" th:inline="javascript" th:fragment="validaciones">
+     //<![CDATA[ 
+          function validarTamanho(field, rules, i, options)
+         {
+         	var tamanhoValidar=rules[i+2];
+        
+            var valor = $.trim(field.val());
+            if (valor != null)
+            {
+        	    var tamanho = valor.length;
+        	    if(tamanho != tamanhoValidar)
+        	    {
+        	    	var mensaje = [[#{afiliacion.tamano.incorrecto}]];
+        	  	  	return mensaje.replace('%', tamanhoValidar)
+        	    }
+        	}
+         }    
+         
+         
+    function renderMoneda(data, type, full) 
+    {   
+        var soles = [[#{moneda.PEN}]];
+        var dolares = [[#{moneda.USD}]];
+         
+        if(data == 'PEN')
+        {
+            return soles;
+        }
+        if(data == 'USD')
+        {
+            return dolares;
+        }  
+        return data;
+    }
+    
+    function renderEstadoLote(data, type, full){
+    	var pendiente = [[#{estadoLote.PENDIENTE}]];
+    	var en_proceso = [[#{estadoLote.EN_PROCESO}]];
+    	var procesado = [[#{estadoLote.PROCESADO}]];
+    	var inactivo = [[#{estadoLote.INACTIVO}]]
+    	
+    	if(data == 'PENDIENTE'){
+    		return pendiente;
+    	}
+        if(data == 'EN_PROCESO'){
+			return en_proceso;            		
+        }
+        if(data == 'PROCESADO'){
+    		return procesado;
+        }
+        if(data == 'INACTIVO'){
+    		return inactivo;
+        }
+        return data;
+    }
+    
+    function renderEstadoAfiliacion(data, type, full){
+    	var afiliado = [[#{estadoAfiliacion.AFILIADO}]];
+    	var desafiliado = [[#{estadoAfiliacion.DESAFILIADO}]];
+    	
+    	if(data == 'AFILIADO'){
+    		return afiliado;
+    	}
+        if(data == 'DESAFILIADO'){
+			return desafiliado;            		
+        }
+        return data;
+    }
+
+    function renderCanal(data, type, full) 
+    {   
+        var plataforma = [[#{canal.PLATAFORMA}]];
+        var homebanking = [[#{canal.HOMEBANKING}]];
+        var comercio = [[#{canal.COMERCIO}]];
+        var adquiriente = [[#{canal.ADQUIRIENTE}]];
+        var emisor = [[#{canal.EMISOR}]];
+         
+        if(data == 'PLATAFORMA')
+        {
+            return plataforma;
+        }
+        if(data == 'HOMEBANKING')
+        {
+            return homebanking;
+        }
+        if(data == 'COMERCIO')
+        {
+            return comercio;
+        }
+        if(data == 'ADQUIRIENTE')
+        {
+            return adquiriente;
+        }
+        if(data == 'EMISOR')
+        {
+            return emisor;
+        }
+          
+        return data;
+    }
+    
+    function renderEstadoSolicitudAfiliacion(data, type, full){
+        var pendiente = [[#{estadoSolicitudAfiliacion.PENDIENTE}]];
+        var expirada = [[#{estadoSolicitudAfiliacion.EXPIRADA}]];
+        var rechazada = [[#{estadoSolicitudAfiliacion.RECHAZADA}]];
+        var aprobada = [[#{estadoSolicitudAfiliacion.APROBADA}]];
+        
+        if(data == 'PENDIENTE'){
+            return pendiente;
+        }
+        if(data == 'EXPIRADA'){
+            return expirada;                 
+        }
+        if(data == 'RECHAZADA'){
+            return rechazada;                 
+        }
+        if(data == 'APROBADA'){
+            return aprobada;                 
+        }
+        return data;
+    }    
+    
+    function renderTipoDocumentoIdentidad(data, type, full){
+    	var dni = [[#{tipoDocumento.DNI}]];
+    	var carnetExtrajeria = [[#{tipoDocumento.CARNET_EXTRANJERIA}]];
+    	var pasaporte = [[#{tipoDocumento.PASAPORTE}]];
+    	
+    	if(data == 'DNI'){
+    		return dni;
+    	}
+        if(data == 'CARNET_EXTRANJERIA'){
+			return carnetExtrajeria;            		
+        }
+        if(data == 'PASAPORTE'){
+    		return pasaporte;
+        }
+        
+        return data;
+    }
+    
+    function renderEstadoComercio(data,type,full){
+    	var pendiente = [[#{estadoComercio.PENDIENTE}]];
+    	var activo = [[#{estadoComercio.ACTIVO}]];
+    	var inactivo = [[#{estadoComercio.INACTIVO}]];
+    	
+    	if(data == 'PENDIENTE'){
+    		return pendiente;
+    	}
+    	if(data == 'ACTIVO'){
+    		return activo;
+    	}
+    	if(data == 'INACTIVO'){
+    		return inactivo;
+    	}
+    	return data;
+    }
+    
+    function renderEstadoCargo(data,type,full){
+    	var pendiente = [[#{estadoCargo.PENDIENTE}]];
+    	var suspendido = [[#{estadoCargo.SUSPENDIDO}]];
+    	var reactivado = [[#{estadoCargo.REACTIVADO}]];
+    	var desafiliado = [[#{estadoCargo.DESAFILIADO}]];
+    	var en_proceso = [[#{estadoCargo.EN_PROCESO}]];
+    	var autorizado = [[#{estadoCargo.AUTORIZADO}]];
+    	var denegado = [[#{estadoCargo.DENEGADO}]];
+    	if(data == 'PENDIENTE'){
+    		return pendiente;
+    	}
+    	if(data == 'SUSPENDIDO'){
+    		return suspendido;
+    	}
+    	if(data == 'REACTIVADO'){
+    		return reactivado;
+    	}
+    	if(data == 'DESAFILIADO'){
+    		return desafiliado;
+    	}
+    	if(data == 'EN_PROCESO'){
+    		return en_proceso;
+    	}
+    	if(data == 'AUTORIZADO'){
+    		return autorizado;
+    	}
+    	if(data == 'DENEGADO'){
+    		return denegado;
+    	}
+    	return data;
+    }
+    
+    function renderEstado(data,type,full){
+    	var inactivo = [[#{estado.INACTIVO}]];
+    	var activo = [[#{estado.ACTIVO}]];
+    	if(data == 'ACTIVO'){
+    		return activo;
+    	}
+    	if(data == 'INACTIVO'){
+    		return inactivo;
+    	}
+    	return data;
+    }
+    
+    function renderTipoTarjeta(data,type,full){
+    	var debito = [[#{tipoTarjeta.DEBITO}]];
+    	var credito = [[#{tipoTarjeta.CREDITO}]];
+    	var prepago = [[#{tipoTarjeta.PREPAGO}]];
+    	if(data == 'DEBITO'){
+    		return debito;
+    	}
+    	if(data == 'CREDITO'){
+    		return credito;
+    	}
+    	if(data == 'PREPAGO'){
+    		return prepago;
+    	}
+    	return data;
+    }
+    
+    function renderTipoImportacion(data,type,full){
+    	var afiliaciones = [[#{tipoImportacion.AFILIACIONES}]];
+    	var desafiliaciones = [[#{tipoImportacion.DESAFILIACIONES}]];
+    	var modificacion_afiliaciones = [[#{tipoImportacion.MODIFICACION_AFILIACIONES}]];
+        var modificacion_solicitudes_afiliacion = [[#{tipoImportacion.MODIFICACION_SOLICITUDES_AFILIACION}]];
+        var cargos = [[#{tipoImportacion.CARGOS}]];
+    	if(data == 'AFILIACIONES'){
+    		return afiliaciones;
+    	}
+    	if(data == 'DESAFILIACIONES'){
+    		return desafiliaciones;
+    	}
+    	if(data == 'MODIFICACION_AFILIACIONES'){
+    		return modificacion_afiliaciones;
+    	}
+        if(data == 'MODIFICACION_SOLICITUDES_AFILIACION'){
+            return modificacion_solicitudes_afiliacion;
+        }
+        if(data == 'CARGOS'){
+            return cargos;
+        }
+    	return data;
+    }
+    
+    function renderCanalImportacion(data,type,full){
+        var adquiriente = [[#{canalModulo.ADQUIRIENTE}]];
+        var comercio = [[#{canalModulo.COMERCIO}]];
+        var emisor = [[#{canalModulo.EMISOR}]];
+        if(data == 'ADQUIRIENTE'){
+            return adquiriente;
+        }
+        if(data == 'COMERCIO'){
+            return comercio;
+        }
+        if(data == 'EMISOR'){
+            return emisor;
+        }
+        return data;
+    }
+    //]]>
+    </script>
+  </div>
+  </body>
+  
+</html>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-bnd xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://websphere.ibm.com/xml/ns/javaee"
+    xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd" version="1.0">
+    <virtual-host name="default_host" />
+    <resource-ref binding-name="jdbc/dsSPRWeb" name="jdbc/dsSPRWeb" />
+    <resource-ref binding-name="services/cache/dmParametros" name="services/cache/dmParametros" />
+    <resource-ref binding-name="jms/cfESB" name="jms/cfESB" />
+    <resource-ref binding-name="jms/qCorreoReq" name="jms/qCorreoReq" />
+    <resource-ref binding-name="jms/qDesencriptacionReq" name="jms/qDesencriptacionReq" />
+    <resource-ref binding-name="jms/qDesencriptacionRes" name="jms/qDesencriptacionRes" />
+    <resource-ref binding-name="jms/qEncriptacionReq" name="jms/qEncriptacionReq" />
+    <resource-ref binding-name="jms/qEncriptacionRes" name="jms/qEncriptacionRes" />
+    <resource-ref binding-name="jms/qValidacionFirmaReq" name="jms/qValidacionFirmaReq" />
+    <resource-ref binding-name="jms/qValidacionFirmaRes" name="jms/qValidacionFirmaRes" />
+</web-bnd>
